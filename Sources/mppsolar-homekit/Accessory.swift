@@ -85,7 +85,7 @@ extension SolarAccessory {
         )
         
         let outputActivePower = GenericCharacteristic<UInt16>(
-            type: .custom(UUID(uuidString: "D872BBE1-ECCA-4339-A937-6FB9B4EC799D")!),
+            type: .custom(UUID(uuidString: "9171E149-D44B-45BF-8D7D-2486F8479529")!),
             value: 0,
             permissions: [.read, .events],
             description: "AC output active power",
@@ -102,7 +102,59 @@ extension SolarAccessory {
             unit: .percentage
         )
         
+        let busVoltage = GenericCharacteristic<UInt16>(
+            type: .custom(UUID(uuidString: "F4E3BA74-1118-4CF3-A5B4-F7DC65EC3DC6")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "Bus voltage",
+            format: .uint16,
+            unit: .none
+        )
         
+        let batteryVoltage = GenericCharacteristic<UInt8>(
+            type: .custom(UUID(uuidString: "A242A709-40C9-4617-9C2F-DE15861B4FE1")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "Battery voltage",
+            format: .uint8,
+            unit: .none
+        )
+        
+        let batteryChargingCurrent = GenericCharacteristic<UInt8>(
+            type: .custom(UUID(uuidString: "082849CB-E073-4951-BB9F-70ED58389BEB")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "Battery charging current",
+            format: .uint8,
+            unit: .none
+        )
+        
+        let inverterHeatSinkTemperature = GenericCharacteristic<UInt8>(
+            type: .custom(UUID(uuidString: "F6F89F38-B5A4-4CB3-9426-2334CF061F73")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "Inverter heat sink temperature",
+            format: .uint8,
+            unit: .celsius
+        )
+        
+        let solarInputCurrent = GenericCharacteristic<UInt8>(
+            type: .custom(UUID(uuidString: "457BDB91-60E4-4FCE-9F20-57B1912A3284")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "PV Input current for battery",
+            format: .uint8,
+            unit: .none
+        )
+        
+        let solarInputVoltage = GenericCharacteristic<UInt8>(
+            type: .custom(UUID(uuidString: "2E910C09-A0BE-4BE5-B035-7C0640A3CDB9")!),
+            value: 0,
+            permissions: [.read, .events],
+            description: "PV Input voltage",
+            format: .uint8,
+            unit: .none
+        )
         
         init() {
             super.init(type: .outlet, characteristics: [
@@ -114,6 +166,12 @@ extension SolarAccessory {
                 AnyCharacteristic(outputApparentPower),
                 AnyCharacteristic(outputActivePower),
                 AnyCharacteristic(outputLoadPercent),
+                AnyCharacteristic(busVoltage),
+                AnyCharacteristic(batteryVoltage),
+                AnyCharacteristic(batteryChargingCurrent),
+                AnyCharacteristic(inverterHeatSinkTemperature),
+                AnyCharacteristic(solarInputCurrent),
+                AnyCharacteristic(solarInputVoltage),
             ])
         }
     }
