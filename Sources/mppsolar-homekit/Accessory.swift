@@ -129,12 +129,12 @@ extension SolarAccessory {
             unit: .none
         )
         
-        let inverterHeatSinkTemperature = GenericCharacteristic<UInt8>(
+        let inverterHeatSinkTemperature = GenericCharacteristic<Int>(
             type: .custom(UUID(uuidString: "F6F89F38-B5A4-4CB3-9426-2334CF061F73")!),
             value: 0,
             permissions: [.read, .events],
             description: "Inverter heat sink temperature",
-            format: .uint8,
+            format: .int,
             unit: .celsius
         )
         
@@ -178,6 +178,16 @@ extension SolarAccessory {
 
     final class BatteryService: Service.BatteryBase {
         
+        init() {
+            let name = GenericCharacteristic<String>(
+                type: .name, 
+                value: "Solar Battery", 
+                permissions: [.read],
+                 format: .string,
+                  unit: .none
+            )
+            super.init(characteristics: [AnyCharacteristic(name)])
+        }
     }
 }
 
@@ -196,11 +206,26 @@ extension SolarAccessory {
         solarService.outputApparentPower.value = UInt16(status.outputApparentPower)
         solarService.outputActivePower.value = UInt16(status.outputActivePower)
         solarService.outputLoadPercent.value = UInt8(status.outputLoadPercent)
+        solarService.busVoltage.value = UInt16(status.busVoltage)
+        solarService.batteryVoltage.value = UInt8(status.batteryVoltage)
+        solarService.batteryChargingCurrent.value = UInt8(status.batteryChargingCurrent)
+        solarService.inverterHeatSinkTemperature.value = Int(status.inverterHeatSinkTemperature)
+        solarService.solarInputCurrent.value = UInt8(status.solarInputCurrent)
+        solarService.solarInputVoltage.value = UInt8(status.solarInputVoltage)
         
         battery.batteryLevel.value = UInt8(status.batteryCapacity)
-        battery.chargingState.value = status.isCharging ? .charging : .notCharging
-        battery.statusLowBattery.value = status.batteryCapacity < 10 ? .batteryLow : .batteryNormal
-        
-        
+        battery.chargingState.value = status.chargingState
+        battery.statusLowBattery.value = status.statusLowBattery
+    }
+}
+
+extension GeneralStatus {
+
+    var chargingState: HAP.Enums.ChargingState {
+        return batteryChargingCurrent > 0 ? .charging : .notCharging
+    }
+
+    var statusLowBattery: HAP.Enums.StatusLowBattery {
+        return (batteryCapacity < 10 || batteryVoltage < 24) ? .batteryLow : .batteryNormal
     }
 }

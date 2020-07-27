@@ -50,11 +50,12 @@ final class SolarController {
         )
         let storage = FileStorage(filename: fileName)
         let hapDevice = HAP.Device(setupCode: setupCode, storage: storage, accessory: accessory)
-        self.server = try HAP.Server(device: hapDevice, listenPort: Int(port))
         self.device = device
         self.refreshInterval = refreshInterval
         self.accessory = accessory
         self.hapDevice = hapDevice
+        self.server = try HAP.Server(device: hapDevice, listenPort: Int(port))
+        self.hapDevice.delegate = self
         // refresh info
         refresh()
         refreshTimer = .scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in self?.refresh() }
@@ -106,7 +107,7 @@ extension SolarController: HAP.DeviceDelegate {
         }
     }
     
-    private func printPairingInstructions() {
+    func printPairingInstructions() {
         if hapDevice.isPaired {
             log?("The device is paired, either unpair using your iPhone or remove the configuration file.")
         } else {

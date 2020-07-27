@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "Cdns_sd",
+        "repositoryURL": "https://github.com/Bouke/Cdns_sd.git",
+        "state": {
+          "branch": null,
+          "revision": "b6dce342895400d0cd86726ad0fcdcad7abc6137",
+          "version": "2.0.0"
+        }
+      },
+      {
         "package": "HAP",
         "repositoryURL": "https://github.com/MillerTechnologyPeru/HAP.git",
         "state": {
@@ -44,6 +53,24 @@
           "branch": "master",
           "revision": "5f39ec93512b9159e9d9be894fd14fbb09ce4eb4",
           "version": null
+        }
+      },
+      {
+        "package": "NetService",
+        "repositoryURL": "https://github.com/Bouke/NetService.git",
+        "state": {
+          "branch": null,
+          "revision": "ade5b7bac667f91da62dfbbdb918aa748ce06bc0",
+          "version": "0.7.0"
+        }
+      },
+      {
+        "package": "OpenSSL",
+        "repositoryURL": "https://github.com/IBM-Swift/OpenSSL.git",
+        "state": {
+          "branch": null,
+          "revision": "6c7e2e3610037fbc05c0d846cec981518961d8bf",
+          "version": "2.2.2"
         }
       },
       {
