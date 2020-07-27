@@ -50,7 +50,7 @@ final class SolarController {
         )
         let storage = FileStorage(filename: fileName)
         let hapDevice = HAP.Device(setupCode: setupCode, storage: storage, accessory: accessory)
-        self.server = try HAP.Server(device: hapDevice, listenPort: 8000)
+        self.server = try HAP.Server(device: hapDevice, listenPort: Int(port))
         self.device = device
         self.refreshInterval = refreshInterval
         self.accessory = accessory
