@@ -94,7 +94,7 @@ extension SolarAccessory {
         )
         
         let outputLoadPercent = GenericCharacteristic<UInt8>(
-            type: .custom(UUID(uuidString: "D872BBE1-ECCA-4339-A937-6FB9B4EC799D")!),
+            type: .custom(UUID(uuidString: "56e67656-cc74-4348-9fb4-fdaa71084601")!),
             value: 0,
             permissions: [.read, .events],
             description: "Output load percent",
