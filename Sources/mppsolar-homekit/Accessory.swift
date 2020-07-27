@@ -111,12 +111,12 @@ extension SolarAccessory {
             unit: .none
         )
         
-        let batteryVoltage = GenericCharacteristic<UInt8>(
+        let batteryVoltage = GenericCharacteristic<Float>(
             type: .custom(UUID(uuidString: "A242A709-40C9-4617-9C2F-DE15861B4FE1")!),
             value: 0,
             permissions: [.read, .events],
             description: "Battery voltage",
-            format: .uint8,
+            format: .float,
             unit: .none
         )
         
@@ -207,9 +207,9 @@ extension SolarAccessory {
         solarService.outputActivePower.value = UInt16(status.outputActivePower)
         solarService.outputLoadPercent.value = UInt8(status.outputLoadPercent)
         solarService.busVoltage.value = UInt16(status.busVoltage)
-        solarService.batteryVoltage.value = UInt8(status.batteryVoltage)
+        solarService.batteryVoltage.value = status.batteryVoltage
         solarService.batteryChargingCurrent.value = UInt8(status.batteryChargingCurrent)
-        solarService.inverterHeatSinkTemperature.value = Int(status.inverterHeatSinkTemperature)
+        solarService.inverterHeatSinkTemperature.value = status.inverterHeatSinkTemperature
         solarService.solarInputCurrent.value = UInt8(status.solarInputCurrent)
         solarService.solarInputVoltage.value = UInt8(status.solarInputVoltage)
         
