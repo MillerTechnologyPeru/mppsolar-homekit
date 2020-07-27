@@ -16,19 +16,19 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         version: "1.0.0"
     )
     
-    @Argument(default: "/dev/hidraw0", help: "The special file path to the solar device.")
+    @Option(default: "/dev/hidraw0", help: "The special file path to the solar device.")
     var path: String
     
-    @Argument(default: 10, help: "The interval (in seconds) at which data is refreshed.")
+    @Option(default: 10, help: "The interval (in seconds) at which data is refreshed.")
     var refreshInterval: Int
     
-    @Argument(default: "configuration.json", help: "The name of the configuration file.")
+    @Option(default: "configuration.json", help: "The name of the configuration file.")
     var file: String
     
-    @Argument(default: nil, help: "The HomeKit setup code.")
+    @Option(default: nil, help: "The HomeKit setup code.")
     var setupCode: String?
     
-    @Argument(default: 8000, help: "The port of the HAP server.")
+    @Option(default: 8000, help: "The port of the HAP server.")
     var port: UInt
     
     func validate() throws {
@@ -53,6 +53,8 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         )
         
         controller.log = { print($0) }
+
+        controller.printPairingInstructions()
         
         RunLoop.main.run()
     }
