@@ -19,8 +19,8 @@ final class SolarAccessory: Accessory {
             info: info,
             type: .outlet,
             services: [
-                battery,
-                solarService
+                solarService,
+                battery
             ]
         )
     }
@@ -178,7 +178,6 @@ extension SolarAccessory {
 
     final class BatteryService: Service.BatteryBase {
         
-        
     }
 }
 
@@ -201,5 +200,7 @@ extension SolarAccessory {
         battery.batteryLevel.value = UInt8(status.batteryCapacity)
         battery.chargingState.value = status.isCharging ? .charging : .notCharging
         battery.statusLowBattery.value = status.batteryCapacity < 10 ? .batteryLow : .batteryNormal
+        
+        
     }
 }
