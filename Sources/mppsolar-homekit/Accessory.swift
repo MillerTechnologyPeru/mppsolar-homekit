@@ -30,11 +30,11 @@ extension SolarAccessory {
     
     final class SolarService: Service {
         
-        let deviceMode = GenericCharacteristic<DeviceMode>(
+        let deviceMode = GenericCharacteristic<String>(
             type: .custom(UUID(uuidString: "93BDE3A4-1D30-4B61-9783-20463CDA1F55")!),
-            value: .powerOn,
+            value: "",
             permissions: [.read, .events],
-            description: "Solar Device Mode",
+            description: "Mode",
             format: .string,
             unit: .none
         )
@@ -198,7 +198,7 @@ extension SolarAccessory {
     func update(mode: DeviceMode,
                 status: GeneralStatus) {
         
-        solarService.deviceMode.value = mode
+        solarService.deviceMode.value = mode.description
         solarService.gridVoltage.value = status.gridVoltage
         solarService.gridFrequency.value = status.gridFrequency
         solarService.outputVoltage.value = status.outputVoltage

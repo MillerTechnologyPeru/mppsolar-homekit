@@ -44,7 +44,7 @@ final class SolarController {
                 name: "MPP Solar",
                 serialNumber: serialNumber.rawValue,
                 manufacturer: "MPP Solar",
-                model: "",
+                model: "MPPSolar",
                 firmwareRevision: ""
             )
         )
