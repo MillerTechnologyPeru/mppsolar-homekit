@@ -15,17 +15,8 @@
         "repositoryURL": "https://github.com/IBM-Swift/BlueCryptor.git",
         "state": {
           "branch": null,
-          "revision": "12d2bf3ec7207ec3cd004b9582f69ef5fae1da3b",
-          "version": "1.0.32"
-        }
-      },
-      {
-        "package": "Cdns_sd",
-        "repositoryURL": "https://github.com/Bouke/Cdns_sd.git",
-        "state": {
-          "branch": null,
-          "revision": "b6dce342895400d0cd86726ad0fcdcad7abc6137",
-          "version": "2.0.0"
+          "revision": "ee5880e031da4c609f372cf7472476ab51d5dd19",
+          "version": "1.0.200"
         }
       },
       {
@@ -51,26 +42,8 @@
         "repositoryURL": "https://github.com/MillerTechnologyPeru/MPPSolar.git",
         "state": {
           "branch": "master",
-          "revision": "5f39ec93512b9159e9d9be894fd14fbb09ce4eb4",
+          "revision": "c77999bd424b81e76067ae0c306e23c2fb5ce17b",
           "version": null
-        }
-      },
-      {
-        "package": "NetService",
-        "repositoryURL": "https://github.com/Bouke/NetService.git",
-        "state": {
-          "branch": null,
-          "revision": "ade5b7bac667f91da62dfbbdb918aa748ce06bc0",
-          "version": "0.7.0"
-        }
-      },
-      {
-        "package": "OpenSSL",
-        "repositoryURL": "https://github.com/IBM-Swift/OpenSSL.git",
-        "state": {
-          "branch": null,
-          "revision": "6c7e2e3610037fbc05c0d846cec981518961d8bf",
-          "version": "2.2.2"
         }
       },
       {
@@ -92,15 +65,6 @@
         }
       },
       {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser",
-        "state": {
-          "branch": null,
-          "revision": "223d62adc52d51669ae2ee19bdb8b7d9fd6fcd9c",
-          "version": "0.0.6"
-        }
-      },
-      {
         "package": "swift-log",
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
@@ -114,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "8a865bd15e69526cbdfcfd7c47698eb20b2ba951",
-          "version": "2.19.0"
+          "revision": "c3e2359c55cd8b47207ab7363b77c9c398a95294",
+          "version": "2.23.0"
         }
       }
     ]
