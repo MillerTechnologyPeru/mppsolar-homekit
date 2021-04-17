@@ -25,7 +25,7 @@ struct MPPSolarHomeKitTool: ParsableCommand {
     @Option(default: "configuration.json", help: "The name of the configuration file.")
     var file: String
     
-    @Option(default: nil, help: "The HomeKit setup code.")
+    @Option(help: "The HomeKit setup code.")
     var setupCode: String?
     
     @Option(default: 8000, help: "The port of the HAP server.")
@@ -39,13 +39,8 @@ struct MPPSolarHomeKitTool: ParsableCommand {
     
     func run() throws {
         
-        print("Loading solar device at \(path)...")
-        
-        guard let solarDevice = MPPSolar(path: path)
-            else { throw CommandError.deviceUnavailable }
-        
         let controller = try SolarController(
-            device: solarDevice,
+            device: path,
             refreshInterval: TimeInterval(refreshInterval),
             fileName: file,
             setupCode: setupCode.map { .override($0) } ?? .random,
@@ -53,9 +48,7 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         )
         
         controller.log = { print($0) }
-
         controller.printPairingInstructions()
-        
         RunLoop.main.run()
     }
 }

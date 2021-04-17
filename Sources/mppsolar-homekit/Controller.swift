@@ -13,11 +13,11 @@ final class SolarController {
     
     // MARK: - Properties
     
-    let device: MPPSolar
-    
     var log: ((String) -> ())?
     
     let refreshInterval: TimeInterval
+    
+    private let filePath: String
     
     private let accessory: SolarAccessory
     
@@ -29,11 +29,14 @@ final class SolarController {
     
     // MARK: - Initialization
     
-    public init(device: MPPSolar,
+    public init(device path: String,
                 refreshInterval: TimeInterval,
                 fileName: String,
                 setupCode: HAP.Device.SetupCode,
                 port: UInt) throws {
+        
+        guard let device = MPPSolar(path: path)
+            else { throw CommandError.deviceUnavailable }
        
         // Load info
         let serialNumber = try device.send(SerialNumber.Inquiry()).serialNumber
@@ -49,8 +52,12 @@ final class SolarController {
             )
         )
         let storage = FileStorage(filename: fileName)
-        let hapDevice = HAP.Device(setupCode: setupCode, storage: storage, accessory: accessory)
-        self.device = device
+        let hapDevice = HAP.Device(
+            setupCode: setupCode,
+            storage: storage,
+            accessory: accessory
+        )
+        self.filePath = path
         self.refreshInterval = refreshInterval
         self.accessory = accessory
         self.hapDevice = hapDevice
@@ -63,12 +70,20 @@ final class SolarController {
     
     // MARK: - Methods
     
+    private func device<T>(_ block: (MPPSolar) throws -> (T)) throws -> T {
+        guard let device = MPPSolar(path: filePath)
+            else { throw CommandError.deviceUnavailable }
+        return try block(device)
+    }
+    
     func refresh() {
         
         do {
-            let mode = try device.send(DeviceMode.Inquiry()).mode
-            let status = try device.send(GeneralStatus.Inquiry())
-            self.accessory.update(mode: mode, status: status)
+            try device {
+                let mode = try $0.send(DeviceMode.Inquiry()).mode
+                let status = try $0.send(GeneralStatus.Inquiry())
+                self.accessory.update(mode: mode, status: status)
+            }
         }
         catch { log?("Error: Could not refresh status. \(error)") }
     }
