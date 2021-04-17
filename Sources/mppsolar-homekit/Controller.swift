@@ -35,17 +35,11 @@ final class SolarController {
                 setupCode: HAP.Device.SetupCode,
                 port: UInt) throws {
         
-        guard let device = MPPSolar(path: path)
-            else { throw CommandError.deviceUnavailable }
-       
-        // Load info
-        let serialNumber = try device.send(SerialNumber.Inquiry()).serialNumber
-        
         // start server
         let accessory = SolarAccessory(
             info: Service.Info(
                 name: "MPP Solar",
-                serialNumber: serialNumber.rawValue,
+                serialNumber: "",
                 manufacturer: "MPP Solar",
                 model: "MPPSolar",
                 firmwareRevision: ""
@@ -82,7 +76,12 @@ final class SolarController {
             try device {
                 let mode = try $0.send(DeviceMode.Inquiry()).mode
                 let status = try $0.send(GeneralStatus.Inquiry())
-                self.accessory.update(mode: mode, status: status)
+                let serialNumber = try $0.send(SerialNumber.Inquiry()).serialNumber
+                self.accessory.update(
+                    mode: mode,
+                    status: status,
+                    serial: serialNumber
+                )
             }
         }
         catch { log?("Error: Could not refresh status. \(error)") }
