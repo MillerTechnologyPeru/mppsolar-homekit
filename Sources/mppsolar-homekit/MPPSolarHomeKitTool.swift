@@ -9,6 +9,7 @@ import MPPSolar
 import HAP
 import ArgumentParser
 
+@main
 struct MPPSolarHomeKitTool: ParsableCommand {
     
     static let configuration = CommandConfiguration(
@@ -16,20 +17,20 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         version: "1.0.0"
     )
     
-    @Option(default: "/dev/hidraw0", help: "The special file path to the solar device.")
-    var path: String
+    @Option(help: "The special file path to the solar device.")
+    var path: String = "/dev/hidraw0"
     
-    @Option(default: 10, help: "The interval (in seconds) at which data is refreshed.")
-    var refreshInterval: Int
+    @Option(help: "The interval (in seconds) at which data is refreshed.")
+    var refreshInterval: Int = 10
     
-    @Option(default: "configuration.json", help: "The name of the configuration file.")
-    var file: String
+    @Option(help: "The name of the configuration file.")
+    var file: String = "configuration.json"
     
     @Option(help: "The HomeKit setup code.")
     var setupCode: String?
     
-    @Option(default: 8000, help: "The port of the HAP server.")
-    var port: UInt
+    @Option(help: "The port of the HAP server.")
+    var port: UInt = 8000
     
     func validate() throws {
         guard refreshInterval >= 1 else {
@@ -52,5 +53,3 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         RunLoop.main.run()
     }
 }
-
-MPPSolarHomeKitTool.main()

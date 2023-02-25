@@ -176,7 +176,7 @@ extension SolarAccessory {
         }
     }
 
-    final class BatteryService: Service.BatteryBase {
+    final class BatteryService: Service.Battery {
         
         init() {
             let name = GenericCharacteristic<String>(
@@ -216,8 +216,8 @@ extension SolarAccessory {
         solarService.solarInputCurrent.value = UInt8(status.solarInputCurrent)
         solarService.solarInputVoltage.value = UInt8(status.solarInputVoltage)
         
-        battery.batteryLevel.value = UInt8(status.batteryCapacity)
-        battery.chargingState.value = status.chargingState
+        battery.batteryLevel?.value = UInt8(status.batteryCapacity)
+        battery.chargingState?.value = status.chargingState
         battery.statusLowBattery.value = status.statusLowBattery
     }
 }

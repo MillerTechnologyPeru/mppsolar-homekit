@@ -1,9 +1,9 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
     name: "mppsolar-homekit",
-    platforms: [.macOS(.v10_12)],
+    platforms: [.macOS(.v12)],
     products: [
         .executable(
             name: "mppsolar-homekit",
@@ -19,17 +19,26 @@ let package = Package(
             .branch("master")
         ),
         .package(
-            url: "https://github.com/apple/swift-argument-parser",
-            .upToNextMinor(from: "0.1.0")
+            url: "https://github.com/apple/swift-argument-parser.git",
+            from: "1.2.0"
         )
     ],
     targets: [
-        .target(
+        .executableTarget(
             name: "mppsolar-homekit",
             dependencies: [
-                "MPPSolar",
-                "HAP",
-                "ArgumentParser"
+                .product(
+                    name: "MPPSolar",
+                    package: "MPPSolar"
+                ),
+                .product(
+                    name: "HAP",
+                    package: "HAP"
+                ),
+                .product(
+                    name: "ArgumentParser",
+                    package: "swift-argument-parser"
+                )
             ]
         )
     ]
