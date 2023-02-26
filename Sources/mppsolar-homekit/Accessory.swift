@@ -186,7 +186,14 @@ extension SolarAccessory {
                  format: .string,
                   unit: .none
             )
-            super.init(characteristics: [AnyCharacteristic(name)])
+            
+            let batteryLevel = PredefinedCharacteristic.batteryLevel()
+            let chargingState = PredefinedCharacteristic.chargingState()
+            super.init(characteristics: [
+                AnyCharacteristic(name),
+                AnyCharacteristic(batteryLevel),
+                AnyCharacteristic(chargingState)
+            ])
         }
     }
 }
@@ -216,7 +223,9 @@ extension SolarAccessory {
         solarService.solarInputCurrent.value = UInt8(status.solarInputCurrent)
         solarService.solarInputVoltage.value = UInt8(status.solarInputVoltage)
         
+        assert(battery.batteryLevel != nil, "Missing battery level characteristic")
         battery.batteryLevel?.value = UInt8(status.batteryCapacity)
+        assert(battery.chargingState != nil, "Missing charging state characteristic")
         battery.chargingState?.value = status.chargingState
         battery.statusLowBattery.value = status.statusLowBattery
     }
@@ -229,6 +238,6 @@ extension GeneralStatus {
     }
 
     var statusLowBattery: HAP.Enums.StatusLowBattery {
-        return (batteryCapacity < 10 || batteryVoltage < 24) ? .batteryLow : .batteryNormal
+        return (batteryCapacity < 10) ? .batteryLow : .batteryNormal
     }
 }
