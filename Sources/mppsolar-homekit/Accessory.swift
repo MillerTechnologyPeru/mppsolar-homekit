@@ -5,6 +5,12 @@
 //  Created by Alsey Coleman Miller on 7/23/20.
 //
 
+#if os(macOS)
+import Darwin
+#elseif os(Linux)
+import Glibc
+#endif
+
 import Foundation
 import HAP
 import MPPSolar
@@ -138,21 +144,21 @@ extension SolarAccessory {
             unit: .celsius
         )
         
-        let solarInputCurrent = GenericCharacteristic<UInt8>(
+        let solarInputCurrent: GenericCharacteristic<UInt32> = GenericCharacteristic<UInt32>(
             type: .custom(UUID(uuidString: "457BDB91-60E4-4FCE-9F20-57B1912A3284")!),
             value: 0,
             permissions: [.read, .events],
-            description: "PV Input current for battery",
-            format: .uint8,
+            description: "PV input current",
+            format: .uint32,
             unit: .none
         )
         
-        let solarInputVoltage = GenericCharacteristic<UInt8>(
+        let solarInputVoltage = GenericCharacteristic<Float>(
             type: .custom(UUID(uuidString: "2E910C09-A0BE-4BE5-B035-7C0640A3CDB9")!),
             value: 0,
             permissions: [.read, .events],
-            description: "PV Input voltage",
-            format: .uint8,
+            description: "PV input voltage",
+            format: .float,
             unit: .none
         )
         
@@ -186,9 +192,9 @@ extension SolarAccessory {
                  format: .string,
                   unit: .none
             )
-            
             let batteryLevel = PredefinedCharacteristic.batteryLevel()
             let chargingState = PredefinedCharacteristic.chargingState()
+
             super.init(characteristics: [
                 AnyCharacteristic(name),
                 AnyCharacteristic(batteryLevel),
@@ -209,25 +215,29 @@ extension SolarAccessory {
         info.serialNumber.value = serial.rawValue
         
         solarService.deviceMode.value = mode.description
-        solarService.gridVoltage.value = status.gridVoltage
-        solarService.gridFrequency.value = status.gridFrequency
-        solarService.outputVoltage.value = status.outputVoltage
-        solarService.outputFrequency.value = status.outputFrequency
+        solarService.gridVoltage.value = format(status.gridVoltage)
+        solarService.gridFrequency.value = format(status.gridFrequency)
+        solarService.outputVoltage.value = format(status.outputVoltage)
+        solarService.outputFrequency.value = format(status.outputFrequency)
         solarService.outputApparentPower.value = UInt16(status.outputApparentPower)
         solarService.outputActivePower.value = UInt16(status.outputActivePower)
         solarService.outputLoadPercent.value = UInt8(status.outputLoadPercent)
         solarService.busVoltage.value = UInt16(status.busVoltage)
-        solarService.batteryVoltage.value = status.batteryVoltage
+        solarService.batteryVoltage.value = format(status.batteryVoltage)
         solarService.batteryChargingCurrent.value = UInt8(status.batteryChargingCurrent)
         solarService.inverterHeatSinkTemperature.value = status.inverterHeatSinkTemperature
-        solarService.solarInputCurrent.value = UInt8(status.solarInputCurrent)
-        solarService.solarInputVoltage.value = UInt8(status.solarInputVoltage)
+        solarService.solarInputCurrent.value = UInt32(status.solarInputCurrent)
+        solarService.solarInputVoltage.value = format(status.solarInputVoltage)
         
         assert(battery.batteryLevel != nil, "Missing battery level characteristic")
         battery.batteryLevel?.value = UInt8(status.batteryCapacity)
         assert(battery.chargingState != nil, "Missing charging state characteristic")
         battery.chargingState?.value = status.chargingState
         battery.statusLowBattery.value = status.statusLowBattery
+    }
+
+    private func format(_ value: Float) -> Float {
+        Float(Int(value * 100)) / 100.0
     }
 }
 

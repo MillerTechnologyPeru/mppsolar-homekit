@@ -42,7 +42,7 @@ final class SolarController {
                 serialNumber: "",
                 manufacturer: "MPP Solar",
                 model: "MPPSolar",
-                firmwareRevision: ""
+                firmwareRevision: "1"
             )
         )
         let storage = FileStorage(filename: fileName)
