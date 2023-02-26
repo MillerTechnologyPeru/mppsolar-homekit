@@ -38,11 +38,11 @@ final class SolarController {
         // start server
         let accessory = SolarAccessory(
             info: Service.Info(
-                name: "MPP Solar",
-                serialNumber: "",
+                name: "MPP Solar Inverter",
+                serialNumber: "0000",
                 manufacturer: "MPP Solar",
                 model: "MPPSolar",
-                firmwareRevision: "1"
+                firmwareRevision: MPPSolarHomeKitTool.configuration.version
             )
         )
         let storage = FileStorage(filename: fileName)
