@@ -161,24 +161,32 @@ extension SolarAccessory {
             format: .float,
             unit: .none
         )
+
+        let batteryLevel = PredefinedCharacteristic.batteryLevel(
+            description: "Battery capacity"
+        )
         
         init() {
-            super.init(type: .outlet, characteristics: [
-                AnyCharacteristic(deviceMode),
-                AnyCharacteristic(gridVoltage),
-                AnyCharacteristic(gridFrequency),
-                AnyCharacteristic(outputVoltage),
-                AnyCharacteristic(outputFrequency),
-                AnyCharacteristic(outputApparentPower),
-                AnyCharacteristic(outputActivePower),
-                AnyCharacteristic(outputLoadPercent),
-                AnyCharacteristic(busVoltage),
-                AnyCharacteristic(batteryVoltage),
-                AnyCharacteristic(batteryChargingCurrent),
-                AnyCharacteristic(inverterHeatSinkTemperature),
-                AnyCharacteristic(solarInputCurrent),
-                AnyCharacteristic(solarInputVoltage),
-            ])
+            super.init(
+                type: .outlet,
+                characteristics: [
+                    AnyCharacteristic(deviceMode),
+                    AnyCharacteristic(gridVoltage),
+                    AnyCharacteristic(gridFrequency),
+                    AnyCharacteristic(outputVoltage),
+                    AnyCharacteristic(outputFrequency),
+                    AnyCharacteristic(outputApparentPower),
+                    AnyCharacteristic(outputActivePower),
+                    AnyCharacteristic(outputLoadPercent),
+                    AnyCharacteristic(busVoltage),
+                    AnyCharacteristic(batteryVoltage),
+                    AnyCharacteristic(batteryChargingCurrent),
+                    AnyCharacteristic(inverterHeatSinkTemperature),
+                    AnyCharacteristic(solarInputCurrent),
+                    AnyCharacteristic(solarInputVoltage),
+                    AnyCharacteristic(batteryLevel)
+                ]
+            )
         }
     }
 
@@ -228,6 +236,7 @@ extension SolarAccessory {
         solarService.inverterHeatSinkTemperature.value = status.inverterHeatSinkTemperature
         solarService.solarInputCurrent.value = UInt32(status.solarInputCurrent)
         solarService.solarInputVoltage.value = format(status.solarInputVoltage)
+        solarService.batteryLevel.value = UInt8(status.batteryCapacity)
         
         assert(battery.batteryLevel != nil, "Missing battery level characteristic")
         battery.batteryLevel?.value = UInt8(status.batteryCapacity)
