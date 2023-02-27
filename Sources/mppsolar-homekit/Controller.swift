@@ -19,7 +19,7 @@ final class SolarController {
     
     private let filePath: String
     
-    private let accessory: SolarAccessory
+    private let accessory: SolarInverterAccessory
     
     private let hapDevice: HAP.Device
     
@@ -37,7 +37,7 @@ final class SolarController {
                 model: String) throws {
         
         // start server
-        let accessory = SolarAccessory(
+        let accessory = SolarInverterAccessory(
             info: Service.Info(
                 name: "MPP Solar Inverter",
                 serialNumber: "0000",
