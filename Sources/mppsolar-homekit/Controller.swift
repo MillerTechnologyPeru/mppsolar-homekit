@@ -75,13 +75,11 @@ final class SolarController {
         do {
             try device {
                 let mode = try $0.send(DeviceMode.Inquiry()).mode
-                let status = try $0.send(GeneralStatus.Inquiry())
+                self.accessory.update(mode: mode)
                 let serialNumber = try $0.send(SerialNumber.Inquiry()).serialNumber
-                self.accessory.update(
-                    mode: mode,
-                    status: status,
-                    serial: serialNumber
-                )
+                self.accessory.update(serial: serialNumber)
+                let status = try $0.send(GeneralStatus.Inquiry())
+                self.accessory.update(status: status)
             }
         }
         catch { log?("Error: Could not refresh status. \(error)") }

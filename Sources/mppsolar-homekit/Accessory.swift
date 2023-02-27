@@ -216,13 +216,16 @@ extension DeviceMode: CharacteristicValueType { }
 
 extension SolarAccessory {
     
-    func update(mode: DeviceMode,
-                status: GeneralStatus,
-                serial: SerialNumber) {
-        
-        info.serialNumber.value = serial.rawValue
-        
+    func update(mode: DeviceMode) {
         solarService.deviceMode.value = mode.description
+    }
+    
+    func update(serial: SerialNumber) {
+        info.serialNumber.value = serial.rawValue
+    }
+    
+    func update(status: GeneralStatus) {
+        
         solarService.gridVoltage.value = format(status.gridVoltage)
         solarService.gridFrequency.value = format(status.gridFrequency)
         solarService.outputVoltage.value = format(status.outputVoltage)
