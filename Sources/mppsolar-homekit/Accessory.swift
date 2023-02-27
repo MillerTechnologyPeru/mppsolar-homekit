@@ -166,6 +166,15 @@ extension SolarAccessory {
             description: "Battery capacity"
         )
         
+        let warningStatus = GenericCharacteristic<String>(
+            type: .custom(UUID(uuidString: "CA8F1E71-8206-4FB8-A754-6FB4DA998AA3")!),
+            value: "",
+            permissions: [.read, .events],
+            description: "Warning Status",
+            format: .string,
+            unit: .none
+        )
+        
         init() {
             super.init(
                 type: .outlet,
@@ -184,7 +193,8 @@ extension SolarAccessory {
                     AnyCharacteristic(inverterHeatSinkTemperature),
                     AnyCharacteristic(solarInputCurrent),
                     AnyCharacteristic(solarInputVoltage),
-                    AnyCharacteristic(batteryLevel)
+                    AnyCharacteristic(batteryLevel),
+                    AnyCharacteristic(warningStatus),
                 ]
             )
         }
@@ -246,6 +256,12 @@ extension SolarAccessory {
         assert(battery.chargingState != nil, "Missing charging state characteristic")
         battery.chargingState?.value = status.chargingState
         battery.statusLowBattery.value = status.statusLowBattery
+    }
+    
+    func update(warning: WarningStatus) {
+        
+        let statusText = warning.description
+        solarService.warningStatus.value = statusText == "[]" ? "None" : statusText
     }
 
     private func format(_ value: Float) -> Float {
