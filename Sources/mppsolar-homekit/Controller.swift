@@ -74,11 +74,11 @@ final class SolarController {
         
         do {
             try device {
-                let mode = try $0.send(DeviceMode.Inquiry()).mode
+                let mode = try $0.send(DeviceMode.Query())
                 self.accessory.update(mode: mode)
-                let serialNumber = try $0.send(SerialNumber.Inquiry()).serialNumber
+                let serialNumber = try $0.send(SerialNumber.Query()).serialNumber
                 self.accessory.update(serial: serialNumber)
-                let status = try $0.send(GeneralStatus.Inquiry())
+                let status = try $0.send(GeneralStatus.Query())
                 self.accessory.update(status: status)
             }
         }
