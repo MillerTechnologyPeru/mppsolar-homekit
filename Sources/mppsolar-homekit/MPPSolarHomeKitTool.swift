@@ -32,6 +32,9 @@ struct MPPSolarHomeKitTool: ParsableCommand {
     @Option(help: "The port of the HAP server.")
     var port: UInt = 8000
     
+    @Option(help: "The model of the solar inverter.")
+    var model: String = "PIP-2424LV-MSD"
+    
     func validate() throws {
         guard refreshInterval >= 1 else {
             throw ValidationError("<refresh-interval> must be at least 1 second.")
@@ -45,7 +48,8 @@ struct MPPSolarHomeKitTool: ParsableCommand {
             refreshInterval: TimeInterval(refreshInterval),
             fileName: file,
             setupCode: setupCode.map { .override($0) } ?? .random,
-            port: port
+            port: port,
+            model: model
         )
         
         controller.log = { print($0) }

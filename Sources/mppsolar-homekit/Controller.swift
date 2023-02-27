@@ -33,7 +33,8 @@ final class SolarController {
                 refreshInterval: TimeInterval,
                 fileName: String,
                 setupCode: HAP.Device.SetupCode,
-                port: UInt) throws {
+                port: UInt,
+                model: String) throws {
         
         // start server
         let accessory = SolarAccessory(
@@ -41,7 +42,7 @@ final class SolarController {
                 name: "MPP Solar Inverter",
                 serialNumber: "0000",
                 manufacturer: "MPP Solar",
-                model: "MPPSolar",
+                model: model,
                 firmwareRevision: MPPSolarHomeKitTool.configuration.version
             )
         )
