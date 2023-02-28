@@ -119,10 +119,11 @@ final class SolarController {
             try device {
                 let _ = try $0.send(OutputFrequency.Setting(frequency: frequency))
                 log?("Set output frequency to \(frequency)")
-                try refresh($0)
             }
         }
         catch { log?("Error: Could not set output frequency to \(frequency). \(error)") }
+        Thread.sleep(forTimeInterval: 1.5)
+        refresh()
     }
 }
 

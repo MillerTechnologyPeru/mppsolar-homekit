@@ -51,6 +51,9 @@ final class RatingService: Service {
         description: "AC output rating frequency",
         format: .uint8,
         unit: .none,
+        maxValue: 60,
+        minValue: 50,
+        minStep: 10,
         validValues: OutputFrequency.allCases.map { Double($0.rawValue) }
     )
     
