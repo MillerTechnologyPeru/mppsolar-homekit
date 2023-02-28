@@ -146,7 +146,7 @@ final class RatingService: Service {
                 AnyCharacteristic(outputRatingApparentPower),
                 AnyCharacteristic(outputRatingActivePower),
                 AnyCharacteristic(batteryRatingVoltage),
-                AnyCharacteristic(outputRatingActivePower),
+                AnyCharacteristic(batteryRechargeVoltage),
                 AnyCharacteristic(batteryUnderVoltage),
                 AnyCharacteristic(batteryBulkVoltage),
                 AnyCharacteristic(batteryFloatVoltage),

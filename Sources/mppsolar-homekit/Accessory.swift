@@ -20,6 +20,7 @@ final class SolarInverterAccessory: Accessory {
     let battery = SolarBatteryService()
     let inverter = InverterService()
     let rating = RatingService()
+    let firmware = FirmwareService()
     
     init(info: Service.Info) {
         super.init(
@@ -28,7 +29,8 @@ final class SolarInverterAccessory: Accessory {
             services: [
                 battery,
                 inverter,
-                rating
+                rating,
+                firmware
             ]
         )
     }
@@ -45,7 +47,7 @@ extension SolarInverterAccessory {
     }
     
     func update(protocolID: ProtocolID) {
-        inverter.protocolID.value = UInt32(protocolID.rawValue)
+        firmware.protocolID.value = UInt32(protocolID.rawValue)
     }
     
     func update(status: GeneralStatus) {
@@ -104,11 +106,11 @@ extension SolarInverterAccessory {
     }
     
     func update(firmware: FirmwareVersion) {
-        inverter.firmwareVersion.value = firmware.rawValue
+        self.firmware.firmwareVersion.value = firmware.rawValue
     }
     
     func update(secondary firmware: FirmwareVersion) {
-        inverter.firmwareVersion2.value = firmware.rawValue
+        self.firmware.firmwareVersion2.value = firmware.rawValue
     }
     
     func update(rating ratingInfo: DeviceRating) {

@@ -197,15 +197,6 @@ final class InverterService: Service.Outlet {
         unit: .none
     )
     
-    let protocolID = GenericCharacteristic<UInt32>(
-        type: .solarHomeKit(200),
-        value: 0,
-        permissions: [.read],
-        description: "Protocol ID",
-        format: .uint32,
-        unit: .none
-    )
-    
     let warningStatus = GenericCharacteristic<String>(
         type: .solarHomeKit(300),
         value: "",
@@ -296,24 +287,6 @@ final class InverterService: Service.Outlet {
         unit: .none
     )
     
-    let firmwareVersion = GenericCharacteristic<String>(
-        type: .solarHomeKit(500),
-        value: "",
-        permissions: [.read, .events],
-        description: "CPU Firmware Version",
-        format: .string,
-        unit: .none
-    )
-    
-    let firmwareVersion2 = GenericCharacteristic<String>(
-        type: .solarHomeKit(501),
-        value: "",
-        permissions: [.read, .events],
-        description: "Secondary CPU Firmware Version",
-        format: .string,
-        unit: .none
-    )
-    
     init() {
         let name = PredefinedCharacteristic.name("Inverter")
         let outletInUse = PredefinedCharacteristic.outletInUse()
@@ -332,7 +305,6 @@ final class InverterService: Service.Outlet {
             AnyCharacteristic(solarInputVoltage),
             AnyCharacteristic(gridVoltage),
             AnyCharacteristic(gridFrequency),
-            AnyCharacteristic(protocolID),
             AnyCharacteristic(warningStatus),
             AnyCharacteristic(chargingStatusAC),
             AnyCharacteristic(chargingStatusSCC),
@@ -350,9 +322,7 @@ final class InverterService: Service.Outlet {
             AnyCharacteristic(temperatureRestart),
             AnyCharacteristic(backlight),
             AnyCharacteristic(interruptAlarm),
-            AnyCharacteristic(recordFault),
-            AnyCharacteristic(firmwareVersion),
-            AnyCharacteristic(firmwareVersion2),
+            AnyCharacteristic(recordFault)
         ])
     }
 }
