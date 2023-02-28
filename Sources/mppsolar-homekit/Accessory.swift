@@ -350,6 +350,24 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
+        let firmwareVersion = GenericCharacteristic<String>(
+            type: .solarHomeKit(500),
+            value: "",
+            permissions: [.read, .events],
+            description: "CPU Firmware Version",
+            format: .string,
+            unit: .none
+        )
+        
+        let firmwareVersion2 = GenericCharacteristic<String>(
+            type: .solarHomeKit(501),
+            value: "",
+            permissions: [.read, .events],
+            description: "Secondary CPU Firmware Version",
+            format: .string,
+            unit: .none
+        )
+        
         init() {
             let name = PredefinedCharacteristic.name("Inverter")
             let outletInUse = PredefinedCharacteristic.outletInUse()
@@ -387,6 +405,8 @@ extension SolarInverterAccessory {
                 AnyCharacteristic(backlight),
                 AnyCharacteristic(interruptAlarm),
                 AnyCharacteristic(recordFault),
+                AnyCharacteristic(firmwareVersion),
+                AnyCharacteristic(firmwareVersion2),
             ])
         }
     }
@@ -459,6 +479,14 @@ extension SolarInverterAccessory {
         inverter.backlight.value = flags.enabled.contains(.backlight)
         inverter.interruptAlarm.value = flags.enabled.contains(.alarm)
         inverter.recordFault.value = flags.enabled.contains(.recordFault)
+    }
+    
+    func update(firmware: FirmwareVersion) {
+        inverter.firmwareVersion.value = firmware.rawValue
+    }
+    
+    func update(secondary firmware: FirmwareVersion) {
+        inverter.firmwareVersion2.value = firmware.rawValue
     }
     
     private func format(_ value: Float) -> Float {
