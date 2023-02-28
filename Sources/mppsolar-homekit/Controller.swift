@@ -85,7 +85,8 @@ final class SolarController {
                 self.accessory.update(status: status)
                 let warning = try $0.send(WarningStatus.Query())
                 self.accessory.update(warning: warning)
-                
+                let flags = try $0.send(FlagStatus.Query())
+                self.accessory.update(flags: flags)
             }
         }
         catch { log?("Error: Could not refresh status. \(error)") }

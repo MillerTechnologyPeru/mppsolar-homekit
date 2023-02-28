@@ -269,6 +269,87 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
+        let buzzer = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(400),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Buzzer",
+            format: .bool,
+            unit: .none
+        )
+        
+        let overloadBypass = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(401),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Overload bypass",
+            format: .bool,
+            unit: .none
+        )
+        
+        let powerSaving = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(402),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Power saving",
+            format: .bool,
+            unit: .none
+        )
+        
+        let displayTimeout = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(403),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "LCD display timeout",
+            format: .bool,
+            unit: .none
+        )
+        
+        let overloadRestart = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(404),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Overload Restart",
+            format: .bool,
+            unit: .none
+        )
+        
+        let temperatureRestart = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(405),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Temperature restart",
+            format: .bool,
+            unit: .none
+        )
+        
+        let backlight = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(406),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "LCD display backlight",
+            format: .bool,
+            unit: .none
+        )
+        
+        let interruptAlarm = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(407),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Interrupt Alarm",
+            format: .bool,
+            unit: .none
+        )
+        
+        let recordFault = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(408),
+            value: false,
+            permissions: [.read, .write, .events],
+            description: "Fault code record",
+            format: .bool,
+            unit: .none
+        )
+        
         init() {
             let name = PredefinedCharacteristic.name("Inverter")
             let outletInUse = PredefinedCharacteristic.outletInUse()
@@ -297,6 +378,15 @@ extension SolarInverterAccessory {
                 AnyCharacteristic(sccFirmareUpdated),
                 AnyCharacteristic(configurationChanged),
                 AnyCharacteristic(addSBUPriorityVersion),
+                AnyCharacteristic(buzzer),
+                AnyCharacteristic(overloadBypass),
+                AnyCharacteristic(powerSaving),
+                AnyCharacteristic(displayTimeout),
+                AnyCharacteristic(overloadRestart),
+                AnyCharacteristic(temperatureRestart),
+                AnyCharacteristic(backlight),
+                AnyCharacteristic(interruptAlarm),
+                AnyCharacteristic(recordFault),
             ])
         }
     }
@@ -337,11 +427,13 @@ extension SolarInverterAccessory {
         inverter.inverterHeatSinkTemperature.value = status.inverterHeatSinkTemperature
         inverter.solarInputCurrent.value = UInt32(status.solarInputCurrent)
         inverter.solarInputVoltage.value = format(status.solarInputVoltage)
+        
         inverter.powerState.value = status.outputVoltage > 0
         assert(inverter.outletInUse != nil, "Missing outlet in use characteristic")
         inverter.outletInUse?.value = status.outputLoadPercent > 0
         inverter.chargingStatusAC.value = status.flags.contains(.chargingStatusAC)
         inverter.chargingStatusSCC.value = status.flags.contains(.chargingStatusSCC)
+        
         inverter.isCharging.value = status.flags.contains(.isCharging)
         inverter.batteryVoltageSteady.value = status.flags.contains(.batteryVoltageSteady)
         inverter.isLoadEnabled.value = status.flags.contains(.isLoadEnabled)
@@ -354,6 +446,19 @@ extension SolarInverterAccessory {
         
         let statusText = warning.description
         inverter.warningStatus.value = statusText == "[]" ? "None" : statusText
+    }
+    
+    func update(flags: FlagStatus.Query.Response) {
+        
+        inverter.buzzer.value = flags.enabled.contains(.buzzer)
+        inverter.overloadBypass.value = flags.enabled.contains(.overloadBypass)
+        inverter.powerSaving.value = flags.enabled.contains(.powerSaving)
+        inverter.displayTimeout.value = flags.enabled.contains(.displayTimeout)
+        inverter.overloadRestart.value = flags.enabled.contains(.overloadRestart)
+        inverter.temperatureRestart.value = flags.enabled.contains(.temperatureRestart)
+        inverter.backlight.value = flags.enabled.contains(.backlight)
+        inverter.interruptAlarm.value = flags.enabled.contains(.alarm)
+        inverter.recordFault.value = flags.enabled.contains(.recordFault)
     }
     
     private func format(_ value: Float) -> Float {
