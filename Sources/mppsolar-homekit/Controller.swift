@@ -71,28 +71,32 @@ final class SolarController {
         return try block(device)
     }
     
+    private func refresh(_ device: MPPSolar) throws {
+        let protocolID = try device.send(ProtocolID.Query()).protocolID
+        self.accessory.update(protocolID: protocolID)
+        let mode = try device.send(DeviceMode.Query())
+        self.accessory.update(mode: mode)
+        let serialNumber = try device.send(SerialNumber.Query()).serialNumber
+        self.accessory.update(serial: serialNumber)
+        let status = try device.send(GeneralStatus.Query())
+        self.accessory.update(status: status)
+        let warning = try device.send(WarningStatus.Query())
+        self.accessory.update(warning: warning)
+        let flags = try device.send(FlagStatus.Query())
+        self.accessory.update(flags: flags)
+        let firmwareVersion = try device.send(FirmwareVersion.Query()).version
+        self.accessory.update(firmware: firmwareVersion)
+        let firmwareVersion2 = try device.send(FirmwareVersion.Query.Secondary()).version
+        self.accessory.update(secondary: firmwareVersion2)
+        let rating = try device.send(DeviceRating.Query())
+        self.accessory.update(rating: rating)
+    }
+    
     func refresh() {
         
         do {
             try device {
-                let protocolID = try $0.send(ProtocolID.Query()).protocolID
-                self.accessory.update(protocolID: protocolID)
-                let mode = try $0.send(DeviceMode.Query())
-                self.accessory.update(mode: mode)
-                let serialNumber = try $0.send(SerialNumber.Query()).serialNumber
-                self.accessory.update(serial: serialNumber)
-                let status = try $0.send(GeneralStatus.Query())
-                self.accessory.update(status: status)
-                let warning = try $0.send(WarningStatus.Query())
-                self.accessory.update(warning: warning)
-                let flags = try $0.send(FlagStatus.Query())
-                self.accessory.update(flags: flags)
-                let firmwareVersion = try $0.send(FirmwareVersion.Query()).version
-                self.accessory.update(firmware: firmwareVersion)
-                let firmwareVersion2 = try $0.send(FirmwareVersion.Query.Secondary()).version
-                self.accessory.update(secondary: firmwareVersion2)
-                let rating = try $0.send(DeviceRating.Query())
-                self.accessory.update(rating: rating)
+                try refresh($0)
             }
         }
         catch { log?("Error: Could not refresh device information. \(error)") }
@@ -103,8 +107,9 @@ final class SolarController {
             let setting: FlagStatus.Setting = newValue ? .init(enabled: [flag]) : .init(disabled: [flag])
             try device {
                 let _ = try $0.send(setting)
+                log?("\(newValue ? "Enabled" : "Disabled") \(flag.description)")
+                try refresh($0)
             }
-            log?("\(newValue ? "Enabled" : "Disabled") \(flag.description)")
         }
         catch { log?("Error: Could not set \(flag.description). \(error)") }
     }
