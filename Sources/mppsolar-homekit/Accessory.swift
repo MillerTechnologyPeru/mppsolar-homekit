@@ -70,7 +70,7 @@ extension SolarInverterAccessory {
     }
     
     final class InverterService: Service.Outlet {
-        
+                
         let deviceMode = GenericCharacteristic<String>(
             type: .solarHomeKit(100),
             value: "",
@@ -80,26 +80,17 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
-        let gridVoltage = GenericCharacteristic<Float>(
+        let outputLoadPercent = GenericCharacteristic<UInt8>(
             type: .solarHomeKit(101),
-            value: 0.0,
+            value: 0,
             permissions: [.read, .events],
-            description: "Grid voltage",
-            format: .float,
-            unit: .none
-        )
-        
-        let gridFrequency = GenericCharacteristic<Float>(
-            type: .solarHomeKit(102),
-            value: 0.0,
-            permissions: [.read, .events],
-            description: "Grid frequency",
-            format: .float,
-            unit: .none
+            description: "Output load percent",
+            format: .uint8,
+            unit: .percentage
         )
         
         let outputVoltage = GenericCharacteristic<Float>(
-            type: .solarHomeKit(103),
+            type: .solarHomeKit(102),
             value: 0.0,
             permissions: [.read, .events],
             description: "AC output voltage",
@@ -108,7 +99,7 @@ extension SolarInverterAccessory {
         )
         
         let outputFrequency = GenericCharacteristic<Float>(
-            type: .solarHomeKit(104),
+            type: .solarHomeKit(103),
             value: 0.0,
             permissions: [.read, .events],
             description: "AC output frequency",
@@ -117,7 +108,7 @@ extension SolarInverterAccessory {
         )
         
         let outputApparentPower = GenericCharacteristic<UInt16>(
-            type: .solarHomeKit(105),
+            type: .solarHomeKit(104),
             value: 0,
             permissions: [.read, .events],
             description: "AC output apparent power",
@@ -126,7 +117,7 @@ extension SolarInverterAccessory {
         )
         
         let outputActivePower = GenericCharacteristic<UInt16>(
-            type: .solarHomeKit(106),
+            type: .solarHomeKit(105),
             value: 0,
             permissions: [.read, .events],
             description: "AC output active power",
@@ -134,17 +125,8 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
-        let outputLoadPercent = GenericCharacteristic<UInt8>(
-            type: .solarHomeKit(107),
-            value: 0,
-            permissions: [.read, .events],
-            description: "Output load percent",
-            format: .uint8,
-            unit: .percentage
-        )
-        
         let busVoltage = GenericCharacteristic<UInt16>(
-            type: .solarHomeKit(108),
+            type: .solarHomeKit(106),
             value: 0,
             permissions: [.read, .events],
             description: "Bus voltage",
@@ -153,7 +135,7 @@ extension SolarInverterAccessory {
         )
         
         let inverterHeatSinkTemperature = GenericCharacteristic<Int>(
-            type: .solarHomeKit(109),
+            type: .solarHomeKit(107),
             value: 0,
             permissions: [.read, .events],
             description: "Inverter heat sink temperature",
@@ -162,7 +144,7 @@ extension SolarInverterAccessory {
         )
         
         let solarInputCurrent: GenericCharacteristic<UInt32> = GenericCharacteristic<UInt32>(
-            type: .solarHomeKit(110),
+            type: .solarHomeKit(108),
             value: 0,
             permissions: [.read, .events],
             description: "PV input current",
@@ -171,7 +153,7 @@ extension SolarInverterAccessory {
         )
         
         let solarInputVoltage = GenericCharacteristic<Float>(
-            type: .solarHomeKit(111),
+            type: .solarHomeKit(109),
             value: 0,
             permissions: [.read, .events],
             description: "PV input voltage",
@@ -179,8 +161,26 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
+        let gridVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(110),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Grid voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let gridFrequency = GenericCharacteristic<Float>(
+            type: .solarHomeKit(111),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Grid frequency",
+            format: .float,
+            unit: .none
+        )
+        
         let warningStatus = GenericCharacteristic<String>(
-            type: .custom(UUID(uuidString: "CA8F1E71-8206-4FB8-A754-6FB4DA998AA3")!),
+            type: .solarHomeKit(112),
             value: "",
             permissions: [.read, .events],
             description: "Warning Status",
@@ -200,8 +200,8 @@ extension SolarInverterAccessory {
                 AnyCharacteristic(outputFrequency),
                 AnyCharacteristic(outputApparentPower),
                 AnyCharacteristic(outputActivePower),
-                AnyCharacteristic(inverterHeatSinkTemperature),
                 AnyCharacteristic(busVoltage),
+                AnyCharacteristic(inverterHeatSinkTemperature),
                 AnyCharacteristic(solarInputCurrent),
                 AnyCharacteristic(solarInputVoltage),
                 AnyCharacteristic(gridVoltage),
@@ -266,6 +266,6 @@ extension GeneralStatus {
     }
 
     var statusLowBattery: HAP.Enums.StatusLowBattery {
-        return (batteryCapacity < 10) ? .batteryLow : .batteryNormal
+        return (batteryCapacity < 25) ? .batteryLow : .batteryNormal
     }
 }
