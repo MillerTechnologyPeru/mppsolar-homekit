@@ -113,6 +113,17 @@ final class SolarController {
         }
         catch { log?("Error: Could not set \(flag.description). \(error)") }
     }
+    
+    func didChange(frequency: OutputFrequency) {
+        do {
+            try device {
+                let _ = try $0.send(OutputFrequency.Setting(frequency: frequency))
+                log?("Set output frequency to \(frequency)")
+                try refresh($0)
+            }
+        }
+        catch { log?("Error: Could not set output frequency to \(frequency). \(error)") }
+    }
 }
 
 // MARK: - HAP Device Delegate
@@ -183,6 +194,17 @@ extension SolarController: HAP.DeviceDelegate {
                 return
             }
             didChange(flag: .recordFault, newValue: value)
+        case .solarHomeKit(604):
+            // change output frequency
+            guard let rawValue = newValue as? UInt8 else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            guard let frequency = OutputFrequency(rawValue: UInt(rawValue)) else {
+                log?("Invalid frequency \(rawValue)")
+                return
+            }
+            didChange(frequency: frequency)
         default:
             break
         }

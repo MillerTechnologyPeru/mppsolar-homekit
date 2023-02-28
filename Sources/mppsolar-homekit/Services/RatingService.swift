@@ -44,13 +44,14 @@ final class RatingService: Service {
         unit: .none
     )
     
-    let outputRatingFrequency = GenericCharacteristic<Float>(
+    let outputRatingFrequency = GenericCharacteristic<UInt8>(
         type: .solarHomeKit(604),
-        value: 0.0,
-        permissions: [.read],
+        value: 60,
+        permissions: [.read, .events, .write],
         description: "AC output rating frequency",
-        format: .float,
-        unit: .none
+        format: .uint8,
+        unit: .none,
+        validValues: OutputFrequency.allCases.map { Double($0.rawValue) }
     )
     
     let outputRatingCurrent = GenericCharacteristic<Float>(

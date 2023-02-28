@@ -117,7 +117,7 @@ extension SolarInverterAccessory {
         rating.gridRatingVoltage.value = format(ratingInfo.gridRatingVoltage)
         rating.gridRatingCurrent.value = format(ratingInfo.gridRatingCurrent)
         rating.outputRatingVoltage.value = format(ratingInfo.outputRatingVoltage)
-        rating.outputRatingFrequency.value = format(ratingInfo.outputRatingFrequency)
+        rating.outputRatingFrequency.value = UInt8(ratingInfo.outputRatingFrequency.rounded())
         rating.outputRatingCurrent.value = format(ratingInfo.outputRatingCurrent)
         rating.outputRatingApparentPower.value = numericCast(ratingInfo.outputRatingApparentPower)
         rating.outputRatingActivePower.value = numericCast(ratingInfo.outputRatingActivePower)
