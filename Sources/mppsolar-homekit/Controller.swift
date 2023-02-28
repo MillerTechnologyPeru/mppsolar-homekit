@@ -95,7 +95,18 @@ final class SolarController {
                 self.accessory.update(rating: rating)
             }
         }
-        catch { log?("Error: Could not refresh status. \(error)") }
+        catch { log?("Error: Could not refresh device information. \(error)") }
+    }
+    
+    func didChange(flag: FlagStatus, newValue: Bool) {
+        do {
+            let setting: FlagStatus.Setting = newValue ? .init(enabled: [flag]) : .init(disabled: [flag])
+            try device {
+                let _ = try $0.send(setting)
+            }
+            log?("\(newValue ? "Enabled" : "Disabled") \(flag.description)")
+        }
+        catch { log?("Error: Could not set \(flag.description). \(error)") }
     }
 }
 
@@ -112,6 +123,64 @@ extension SolarController: HAP.DeviceDelegate {
                            ofAccessory accessory: Accessory,
                            didChangeValue newValue: T?) {
         log?("Characteristic \(characteristic) in service \(service.type) of accessory \(accessory.info.name.value ?? "") did change: \(String(describing: newValue))")
+        switch characteristic.type {
+        case .solarFlag(.buzzer):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .buzzer, newValue: value)
+        case .solarFlag(.overloadBypass):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .overloadBypass, newValue: value)
+        case .solarFlag(.powerSaving):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .powerSaving, newValue: value)
+        case .solarFlag(.displayTimeout):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .displayTimeout, newValue: value)
+        case .solarFlag(.overloadRestart):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .overloadRestart, newValue: value)
+        case .solarFlag(.temperatureRestart):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .temperatureRestart, newValue: value)
+        case .solarFlag(.backlight):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .backlight, newValue: value)
+        case .solarFlag(.alarm):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .alarm, newValue: value)
+        case .solarFlag(.recordFault):
+            guard let value = newValue as? Bool else {
+                assertionFailure("invalid type \(String(describing: newValue))")
+                return
+            }
+            didChange(flag: .recordFault, newValue: value)
+        default:
+            break
+        }
     }
 
     func characteristicListenerDidSubscribe(_ accessory: Accessory,

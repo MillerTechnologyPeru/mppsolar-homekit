@@ -7,6 +7,7 @@
 
 import Foundation
 import HAP
+import MPPSolar
 
 public extension UUID {
     
@@ -26,5 +27,10 @@ public extension CharacteristicType {
     
     static func solarHomeKit(_ index: UInt16) -> CharacteristicType {
         .custom(.solarHomeKit(index))
+    }
+    
+    static func solarFlag(_ flag: FlagStatus) -> CharacteristicType {
+        let index = FlagStatus.allCases.firstIndex(of: flag) ?? 0
+        return .solarHomeKit(400 + numericCast(index))
     }
 }

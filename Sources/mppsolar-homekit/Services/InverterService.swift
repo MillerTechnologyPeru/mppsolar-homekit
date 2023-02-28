@@ -206,86 +206,23 @@ final class InverterService: Service.Outlet {
         unit: .none
     )
     
-    let buzzer = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(400),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Buzzer",
-        format: .bool,
-        unit: .none
-    )
+    let buzzer = FlagStatus.buzzer.homeKitCharacteristic()
     
-    let overloadBypass = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(401),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Overload bypass",
-        format: .bool,
-        unit: .none
-    )
+    let overloadBypass = FlagStatus.overloadBypass.homeKitCharacteristic()
     
-    let powerSaving = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(402),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Power saving",
-        format: .bool,
-        unit: .none
-    )
+    let powerSaving = FlagStatus.powerSaving.homeKitCharacteristic()
     
-    let displayTimeout = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(403),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "LCD display timeout",
-        format: .bool,
-        unit: .none
-    )
+    let displayTimeout = FlagStatus.displayTimeout.homeKitCharacteristic()
     
-    let overloadRestart = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(404),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Overload Restart",
-        format: .bool,
-        unit: .none
-    )
+    let overloadRestart = FlagStatus.overloadRestart.homeKitCharacteristic()
     
-    let temperatureRestart = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(405),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Temperature restart",
-        format: .bool,
-        unit: .none
-    )
+    let temperatureRestart = FlagStatus.temperatureRestart.homeKitCharacteristic()
     
-    let backlight = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(406),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "LCD display backlight",
-        format: .bool,
-        unit: .none
-    )
+    let backlight = FlagStatus.backlight.homeKitCharacteristic()
     
-    let interruptAlarm = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(407),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Interrupt Alarm",
-        format: .bool,
-        unit: .none
-    )
+    let interruptAlarm = FlagStatus.alarm.homeKitCharacteristic()
     
-    let recordFault = GenericCharacteristic<Bool>(
-        type: .solarHomeKit(408),
-        value: false,
-        permissions: [.read, .write, .events],
-        description: "Fault code record",
-        format: .bool,
-        unit: .none
-    )
+    let recordFault = FlagStatus.recordFault.homeKitCharacteristic()
     
     init() {
         let name = PredefinedCharacteristic.name("Inverter")
@@ -325,4 +262,6 @@ final class InverterService: Service.Outlet {
             AnyCharacteristic(recordFault)
         ])
     }
+    
+    
 }
