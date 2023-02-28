@@ -91,7 +91,8 @@ final class SolarController {
                 self.accessory.update(firmware: firmwareVersion)
                 let firmwareVersion2 = try $0.send(FirmwareVersion.Query.Secondary()).version
                 self.accessory.update(secondary: firmwareVersion2)
-                
+                let rating = try $0.send(DeviceRating.Query())
+                self.accessory.update(rating: rating)
             }
         }
         catch { log?("Error: Could not refresh status. \(error)") }
