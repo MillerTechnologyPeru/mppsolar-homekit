@@ -39,9 +39,11 @@ public final class FirmwareService: Service {
     )
     
     init() {
+        let name = PredefinedCharacteristic.name("Firmware")
         super.init(
             type: .solarHomeKit(200),
             characteristics: [
+                AnyCharacteristic(name),
                 AnyCharacteristic(protocolID),
                 AnyCharacteristic(firmwareVersion),
                 AnyCharacteristic(firmwareVersion2),

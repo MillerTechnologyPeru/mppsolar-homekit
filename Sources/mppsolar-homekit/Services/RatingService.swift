@@ -135,9 +135,11 @@ final class RatingService: Service {
     )
     
     init() {
+        let name = PredefinedCharacteristic.name("Firmware")
         super.init(
             type: .solarHomeKit(600),
             characteristics: [
+                AnyCharacteristic(name),
                 AnyCharacteristic(gridRatingVoltage),
                 AnyCharacteristic(gridRatingCurrent),
                 AnyCharacteristic(outputRatingVoltage),
