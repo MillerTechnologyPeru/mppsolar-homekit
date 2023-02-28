@@ -127,6 +127,18 @@ extension SolarInverterAccessory {
         rating.batteryBulkVoltage.value = format(ratingInfo.batteryBulkVoltage)
         rating.batteryFloatVoltage.value = format(ratingInfo.batteryFloatVoltage)
         rating.batteryType.value = ratingInfo.batteryType.description
+        rating.maxChargingCurrentAC.value = numericCast(ratingInfo.maxChargingCurrentAC)
+        rating.maxChargingCurrent.value = numericCast(ratingInfo.maxChargingCurrent)
+        rating.inputVoltageRange.value = ratingInfo.inputVoltageRange.description
+        rating.outputSourcePriority.value = ratingInfo.outputSourcePriority.description
+        rating.chargerSourcePriority.value = ratingInfo.chargerSourcePriority.description
+        rating.maxParallel.value = numericCast(ratingInfo.maxParallel)
+        rating.machineType.value = ratingInfo.inputVoltageRange.description
+        rating.topology.value = ratingInfo.topology
+        rating.outputMode.value = ratingInfo.outputMode.description
+        rating.batteryRedischargeVoltage.value = format(ratingInfo.batteryRedischargeVoltage)
+        rating.isParallelAllPVRequired.value = ratingInfo.isParallelAllPVRequired
+        rating.isPVInputMaxSumLoad.value = ratingInfo.isPVInputMaxSumLoad
     }
     
     func format(_ value: Float) -> Float {
