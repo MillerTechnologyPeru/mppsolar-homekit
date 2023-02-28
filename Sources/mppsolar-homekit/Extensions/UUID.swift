@@ -15,6 +15,13 @@ public extension UUID {
     }
 }
 
+public extension ServiceType {
+    
+    static func solarHomeKit(_ index: UInt16) -> ServiceType {
+        .custom(.solarHomeKit(index))
+    }
+}
+
 public extension CharacteristicType {
     
     static func solarHomeKit(_ index: UInt16) -> CharacteristicType {

@@ -19,6 +19,7 @@ final class SolarInverterAccessory: Accessory {
     
     let battery = BatteryService()
     let inverter = InverterService()
+    let rating = RatingService()
     
     init(info: Service.Info) {
         super.init(
@@ -27,6 +28,7 @@ final class SolarInverterAccessory: Accessory {
             services: [
                 battery,
                 inverter,
+                rating
             ]
         )
     }
@@ -410,6 +412,147 @@ extension SolarInverterAccessory {
             ])
         }
     }
+    
+    final class RatingService: Service {
+        
+        let gridRatingVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(601),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Grid rating voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let gridRatingCurrent = GenericCharacteristic<Float>(
+            type: .solarHomeKit(602),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Grid rating current",
+            format: .float,
+            unit: .none
+        )
+        
+        let outputRatingVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(603),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "AC output rating voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let outputRatingFrequency = GenericCharacteristic<Float>(
+            type: .solarHomeKit(604),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "AC output rating frequency",
+            format: .float,
+            unit: .none
+        )
+        
+        let outputRatingCurrent = GenericCharacteristic<Float>(
+            type: .solarHomeKit(605),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "AC output rating current",
+            format: .float,
+            unit: .none
+        )
+        
+        let outputRatingApparentPower = GenericCharacteristic<UInt32>(
+            type: .solarHomeKit(606),
+            value: 0,
+            permissions: [.read, .events],
+            description: "AC output rating apparent power",
+            format: .uint32,
+            unit: .none
+        )
+        
+        let outputRatingActivePower = GenericCharacteristic<UInt32>(
+            type: .solarHomeKit(607),
+            value: 0,
+            permissions: [.read, .events],
+            description: "AC output rating active power",
+            format: .uint32,
+            unit: .none
+        )
+        
+        let batteryRatingVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(608),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Battery rating voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let batteryRechargeVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(609),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Battery re-charge voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let batteryUnderVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(610),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Battery under voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let batteryBulkVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(611),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Battery bulk voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let batteryFloatVoltage = GenericCharacteristic<Float>(
+            type: .solarHomeKit(612),
+            value: 0.0,
+            permissions: [.read, .events],
+            description: "Battery float voltage",
+            format: .float,
+            unit: .none
+        )
+        
+        let batteryType = GenericCharacteristic<String>(
+            type: .solarHomeKit(613),
+            value: DeviceRating.BatteryType.agm.description,
+            permissions: [.read, .events],
+            description: "Battery type",
+            format: .string,
+            unit: .none
+        )
+        
+        init() {
+            super.init(
+                type: .solarHomeKit(600),
+                characteristics: [
+                    AnyCharacteristic(gridRatingVoltage),
+                    AnyCharacteristic(gridRatingCurrent),
+                    AnyCharacteristic(outputRatingVoltage),
+                    AnyCharacteristic(outputRatingFrequency),
+                    AnyCharacteristic(outputRatingCurrent),
+                    AnyCharacteristic(outputRatingApparentPower),
+                    AnyCharacteristic(outputRatingActivePower),
+                    AnyCharacteristic(batteryRatingVoltage),
+                    AnyCharacteristic(outputRatingActivePower),
+                    AnyCharacteristic(batteryUnderVoltage),
+                    AnyCharacteristic(batteryBulkVoltage),
+                    AnyCharacteristic(batteryFloatVoltage),
+                    AnyCharacteristic(batteryType),
+                ]
+            )
+        }
+    }
 }
 
 extension SolarInverterAccessory {
@@ -487,6 +630,22 @@ extension SolarInverterAccessory {
     
     func update(secondary firmware: FirmwareVersion) {
         inverter.firmwareVersion2.value = firmware.rawValue
+    }
+    
+    func update(rating ratingInfo: DeviceRating) {
+        rating.gridRatingVoltage.value = format(ratingInfo.gridRatingVoltage)
+        rating.gridRatingCurrent.value = format(ratingInfo.gridRatingCurrent)
+        rating.outputRatingVoltage.value = format(ratingInfo.outputRatingVoltage)
+        rating.outputRatingFrequency.value = format(ratingInfo.outputRatingFrequency)
+        rating.outputRatingCurrent.value = format(ratingInfo.outputRatingCurrent)
+        rating.outputRatingApparentPower.value = numericCast(ratingInfo.outputRatingApparentPower)
+        rating.outputRatingActivePower.value = numericCast(ratingInfo.outputRatingActivePower)
+        rating.batteryRatingVoltage.value = format(ratingInfo.batteryRatingVoltage)
+        rating.batteryRechargeVoltage.value = format(ratingInfo.batteryRechargeVoltage)
+        rating.batteryUnderVoltage.value = format(ratingInfo.batteryUnderVoltage)
+        rating.batteryBulkVoltage.value = format(ratingInfo.batteryBulkVoltage)
+        rating.batteryFloatVoltage.value = format(ratingInfo.batteryFloatVoltage)
+        rating.batteryType.value = ratingInfo.batteryType.description
     }
     
     private func format(_ value: Float) -> Float {
