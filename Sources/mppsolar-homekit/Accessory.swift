@@ -179,8 +179,89 @@ extension SolarInverterAccessory {
             unit: .none
         )
         
-        let warningStatus = GenericCharacteristic<String>(
+        let chargingStatusAC = GenericCharacteristic<Bool>(
             type: .solarHomeKit(112),
+            value: false,
+            permissions: [.read, .events],
+            description: "AC charging",
+            format: .bool,
+            unit: .none
+        )
+        
+        let chargingStatusSCC = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(113),
+            value: false,
+            permissions: [.read, .events],
+            description: "SCC charging",
+            format: .bool,
+            unit: .none
+        )
+        
+        let isCharging = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(114),
+            value: false,
+            permissions: [.read, .events],
+            description: "Charging",
+            format: .bool,
+            unit: .none
+        )
+        
+        let batteryVoltageSteady = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(115),
+            value: false,
+            permissions: [.read, .events],
+            description: "Battery voltage to steady while charging",
+            format: .bool,
+            unit: .none
+        )
+        
+        let isLoadEnabled = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(116),
+            value: false,
+            permissions: [.read, .events],
+            description: "Load status",
+            format: .bool,
+            unit: .none
+        )
+        
+        let sccFirmareUpdated = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(117),
+            value: false,
+            permissions: [.read, .events],
+            description: "SCC firmware version updated",
+            format: .bool,
+            unit: .none
+        )
+        
+        let configurationChanged = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(118),
+            value: false,
+            permissions: [.read, .events],
+            description: "Configuration changed",
+            format: .bool,
+            unit: .none
+        )
+        
+        let addSBUPriorityVersion = GenericCharacteristic<Bool>(
+            type: .solarHomeKit(119),
+            value: false,
+            permissions: [.read, .events],
+            description: "Add SBU priority version",
+            format: .bool,
+            unit: .none
+        )
+        
+        let protocolID = GenericCharacteristic<UInt32>(
+            type: .solarHomeKit(200),
+            value: 0,
+            permissions: [.read],
+            description: "Protocol ID",
+            format: .uint32,
+            unit: .none
+        )
+        
+        let warningStatus = GenericCharacteristic<String>(
+            type: .solarHomeKit(300),
             value: "",
             permissions: [.read, .events],
             description: "Warning Status",
@@ -206,7 +287,16 @@ extension SolarInverterAccessory {
                 AnyCharacteristic(solarInputVoltage),
                 AnyCharacteristic(gridVoltage),
                 AnyCharacteristic(gridFrequency),
+                AnyCharacteristic(protocolID),
                 AnyCharacteristic(warningStatus),
+                AnyCharacteristic(chargingStatusAC),
+                AnyCharacteristic(chargingStatusSCC),
+                AnyCharacteristic(isCharging),
+                AnyCharacteristic(batteryVoltageSteady),
+                AnyCharacteristic(isLoadEnabled),
+                AnyCharacteristic(sccFirmareUpdated),
+                AnyCharacteristic(configurationChanged),
+                AnyCharacteristic(addSBUPriorityVersion),
             ])
         }
     }
@@ -220,6 +310,10 @@ extension SolarInverterAccessory {
     
     func update(serial: SerialNumber) {
         info.serialNumber.value = serial.rawValue
+    }
+    
+    func update(protocolID: ProtocolID) {
+        inverter.protocolID.value = UInt32(protocolID.rawValue)
     }
     
     func update(status: GeneralStatus) {
@@ -246,6 +340,14 @@ extension SolarInverterAccessory {
         inverter.powerState.value = status.outputVoltage > 0
         assert(inverter.outletInUse != nil, "Missing outlet in use characteristic")
         inverter.outletInUse?.value = status.outputLoadPercent > 0
+        inverter.chargingStatusAC.value = status.flags.contains(.chargingStatusAC)
+        inverter.chargingStatusSCC.value = status.flags.contains(.chargingStatusSCC)
+        inverter.isCharging.value = status.flags.contains(.isCharging)
+        inverter.batteryVoltageSteady.value = status.flags.contains(.batteryVoltageSteady)
+        inverter.isLoadEnabled.value = status.flags.contains(.isLoadEnabled)
+        inverter.sccFirmareUpdated.value = status.flags.contains(.sccFirmareUpdated)
+        inverter.configurationChanged.value = status.flags.contains(.configurationChanged)
+        inverter.addSBUPriorityVersion.value = status.flags.contains(.addSBUPriorityVersion)
     }
     
     func update(warning: WarningStatus) {

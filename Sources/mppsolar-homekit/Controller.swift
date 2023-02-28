@@ -75,6 +75,8 @@ final class SolarController {
         
         do {
             try device {
+                let protocolID = try $0.send(ProtocolID.Query()).protocolID
+                self.accessory.update(protocolID: protocolID)
                 let mode = try $0.send(DeviceMode.Query())
                 self.accessory.update(mode: mode)
                 let serialNumber = try $0.send(SerialNumber.Query()).serialNumber
