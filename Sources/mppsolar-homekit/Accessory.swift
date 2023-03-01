@@ -90,6 +90,7 @@ extension SolarInverterAccessory {
         
         let statusText = warning.description
         inverter.warningStatus.value = statusText == "[]" ? "None" : statusText
+        inverter.statusFault.value = statusText == "[]" ? 0 : 1
     }
     
     func update(flags: FlagStatus.Query.Response) {

@@ -206,6 +206,8 @@ final class InverterService: Service.Outlet {
         unit: .none
     )
     
+    let statusFault = PredefinedCharacteristic.statusFault()
+    
     let buzzer = FlagStatus.buzzer.homeKitCharacteristic()
     
     let overloadBypass = FlagStatus.overloadBypass.homeKitCharacteristic()
@@ -251,6 +253,7 @@ final class InverterService: Service.Outlet {
             AnyCharacteristic(sccFirmareUpdated),
             AnyCharacteristic(configurationChanged),
             AnyCharacteristic(addSBUPriorityVersion),
+            AnyCharacteristic(statusFault),
             AnyCharacteristic(buzzer),
             AnyCharacteristic(overloadBypass),
             AnyCharacteristic(powerSaving),
