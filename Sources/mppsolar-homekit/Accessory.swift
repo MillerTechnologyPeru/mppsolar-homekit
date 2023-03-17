@@ -74,7 +74,7 @@ extension SolarInverterAccessory {
         
         inverter.powerState.value = status.outputVoltage > 0
         assert(inverter.outletInUse != nil, "Missing outlet in use characteristic")
-        inverter.outletInUse?.value = status.outputLoadPercent > 0
+        inverter.outletInUse?.value = status.outputActivePower > 0
         inverter.chargingStatusAC.value = status.flags.contains(.chargingStatusAC)
         inverter.chargingStatusSCC.value = status.flags.contains(.chargingStatusSCC)
         
