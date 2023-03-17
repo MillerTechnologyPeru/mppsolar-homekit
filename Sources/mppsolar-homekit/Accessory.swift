@@ -71,6 +71,7 @@ extension SolarInverterAccessory {
         inverter.inverterHeatSinkTemperature.value = status.inverterHeatSinkTemperature
         inverter.solarInputCurrent.value = UInt32(status.solarInputCurrent)
         inverter.solarInputVoltage.value = format(status.solarInputVoltage)
+        inverter.outputCurrent.value = format(Float(status.outputActivePower) / status.outputVoltage)
         
         inverter.powerState.value = status.outputVoltage > 0
         assert(inverter.outletInUse != nil, "Missing outlet in use characteristic")

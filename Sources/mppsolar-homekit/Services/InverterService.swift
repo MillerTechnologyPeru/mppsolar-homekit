@@ -226,6 +226,15 @@ final class InverterService: Service.Outlet {
     
     let recordFault = FlagStatus.recordFault.homeKitCharacteristic()
     
+    let outputCurrent = GenericCharacteristic<Float>(
+        type: .eveCurrent,
+        value: 0.0,
+        permissions: [.read, .events],
+        description: "AC Output Current",
+        format: .float,
+        unit: .none
+    )
+    
     init() {
         let name = PredefinedCharacteristic.name("Inverter")
         let outletInUse = PredefinedCharacteristic.outletInUse()
@@ -262,9 +271,8 @@ final class InverterService: Service.Outlet {
             AnyCharacteristic(temperatureRestart),
             AnyCharacteristic(backlight),
             AnyCharacteristic(interruptAlarm),
-            AnyCharacteristic(recordFault)
+            AnyCharacteristic(recordFault),
+            AnyCharacteristic(outputCurrent)
         ])
     }
-    
-    
 }
