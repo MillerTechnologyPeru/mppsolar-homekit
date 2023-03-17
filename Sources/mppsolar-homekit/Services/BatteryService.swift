@@ -18,10 +18,10 @@ import MPPSolar
 final class SolarBatteryService: Service.Battery {
     
     let batteryVoltage = GenericCharacteristic<Float>(
-        type: .solarHomeKit(0),
+        type: .custom(UUID(uuidString: "5C7D8287-D288-4F4D-BB4A-161A83A99752")!),
         value: 0,
         permissions: [.read, .events],
-        description: "Battery voltage",
+        description: "Battery Voltage",
         format: .float,
         unit: .none
     )
@@ -30,7 +30,7 @@ final class SolarBatteryService: Service.Battery {
         type: .solarHomeKit(1),
         value: 0,
         permissions: [.read, .events],
-        description: "Battery charging current",
+        description: "Battery Charging Current",
         format: .uint8,
         unit: .none
     )

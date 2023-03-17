@@ -36,7 +36,7 @@ final class InverterService: Service.Outlet {
     )
     
     let outputVoltage = GenericCharacteristic<Float>(
-        type: .solarHomeKit(102),
+        type: .eveVoltage,
         value: 0.0,
         permissions: [.read, .events],
         description: "AC output voltage",
@@ -63,7 +63,7 @@ final class InverterService: Service.Outlet {
     )
     
     let outputActivePower = GenericCharacteristic<UInt16>(
-        type: .solarHomeKit(105),
+        type: .eveConsumption,
         value: 0,
         permissions: [.read, .events],
         description: "AC output active power",

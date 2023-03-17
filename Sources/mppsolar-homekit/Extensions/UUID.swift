@@ -34,3 +34,18 @@ public extension CharacteristicType {
         return .solarHomeKit(400 + numericCast(index))
     }
 }
+
+public extension CharacteristicType {
+    
+    static var eveVoltage: CharacteristicType {
+        .custom(UUID(uuidString: "E863F10A-079E-48FF-8F27-9C2605A29F52")!)
+    }
+    
+    static var eveCurrent: CharacteristicType {
+        .custom(UUID(uuidString: "E863F126-079E-48FF-8F27-9C2605A29F52")!)
+    }
+    
+    static var eveConsumption: CharacteristicType {
+        .custom(UUID(uuidString: "E863F10D-079E-48FF-8F27-9C2605A29F52")!)
+    }
+}
