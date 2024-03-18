@@ -4,15 +4,15 @@ on: [push]
 
 jobs:
 
-    macOS-swift-53:
-        name: macOS (Swift 5.3)
-        runs-on: macOS-latest
+    macOS-swift:
+        name: macOS
+        runs-on: macos-14
         steps:
         - name: Checkout
           uses: actions/checkout@v1
         - name: Xcode Version
           run: |
-            sudo xcode-select -s /Applications/Xcode_12.app
+            sudo xcode-select -s /Applications/Xcode_15.2.app
             xcodebuild -version
             swift --version
         - name: Swift Version
