@@ -10,7 +10,7 @@ import HAP
 import ArgumentParser
 
 @main
-struct MPPSolarHomeKitTool: ParsableCommand {
+struct MPPSolarHomeKitTool: AsyncParsableCommand {
     
     static let configuration = CommandConfiguration(
         abstract: "A deamon for exposing an MPP Solar device to HomeKit",
@@ -41,11 +41,10 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         }
     }
     
-    func run() throws {
+    func run() async throws {
         
-        let controller = try SolarController(
+        let controller = try await SolarController(
             device: path,
-            refreshInterval: TimeInterval(refreshInterval),
             fileName: file,
             setupCode: setupCode.map { .override($0) } ?? .random,
             port: port,
@@ -54,6 +53,10 @@ struct MPPSolarHomeKitTool: ParsableCommand {
         
         controller.log = { print($0) }
         controller.printPairingInstructions()
-        RunLoop.main.run()
+        
+        while true {
+            try await Task.sleep(timeInterval: TimeInterval(refreshInterval))
+            await controller.refresh()
+        }
     }
 }

@@ -14,9 +14,7 @@ final class SolarController {
     // MARK: - Properties
     
     var log: ((String) -> ())?
-    
-    let refreshInterval: TimeInterval
-    
+        
     private let filePath: String
     
     private let accessory: SolarInverterAccessory
@@ -25,16 +23,17 @@ final class SolarController {
     
     private let server: HAP.Server
     
-    private var refreshTimer: Timer?
+    private var refreshTask: Task<Void, Never>?
     
     // MARK: - Initialization
     
-    public init(device path: String,
-                refreshInterval: TimeInterval,
-                fileName: String,
-                setupCode: HAP.Device.SetupCode,
-                port: UInt,
-                model: String) throws {
+    public init(
+        device path: String,
+        fileName: String,
+        setupCode: HAP.Device.SetupCode,
+        port: UInt,
+        model: String
+    ) async throws {
         
         // start server
         let accessory = SolarInverterAccessory(
@@ -53,77 +52,81 @@ final class SolarController {
             accessory: accessory
         )
         self.filePath = path
-        self.refreshInterval = refreshInterval
         self.accessory = accessory
         self.hapDevice = hapDevice
         self.server = try HAP.Server(device: hapDevice, listenPort: Int(port))
         self.hapDevice.delegate = self
-        // refresh info
-        refresh()
-        refreshTimer = .scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in self?.refresh() }
+        // refresh info once
+        try await device {
+            try await refresh($0)
+        }
     }
     
     // MARK: - Methods
     
-    private func device<T>(_ block: (MPPSolar) throws -> (T)) throws -> T {
-        guard let device = MPPSolar(path: filePath)
+    private func device<T>(_ block: (MPPSolar) async throws -> (T)) async throws -> T {
+        guard let device = await MPPSolar(path: filePath)
             else { throw CommandError.deviceUnavailable }
-        return try block(device)
+        return try await block(device)
     }
     
-    private func refresh(_ device: MPPSolar) throws {
-        let protocolID = try device.send(ProtocolID.Query()).protocolID
-        self.accessory.update(protocolID: protocolID)
-        let mode = try device.send(DeviceMode.Query())
-        self.accessory.update(mode: mode)
-        let serialNumber = try device.send(SerialNumber.Query()).serialNumber
-        self.accessory.update(serial: serialNumber)
-        let status = try device.send(GeneralStatus.Query())
+    private func refresh(_ device: MPPSolar) async throws {
+        let status = try await device.send(GeneralStatus.Query())
         self.accessory.update(status: status)
-        let warning = try device.send(WarningStatus.Query())
+        let protocolID = try await device.send(ProtocolID.Query()).protocolID
+        self.accessory.update(protocolID: protocolID)
+        let mode = try await device.send(DeviceMode.Query())
+        self.accessory.update(mode: mode)
+        let serialNumber = try await device.send(SerialNumber.Query()).serialNumber
+        self.accessory.update(serial: serialNumber)
+        let warning = try await device.send(WarningStatus.Query())
         self.accessory.update(warning: warning)
-        let flags = try device.send(FlagStatus.Query())
+        let flags = try await device.send(FlagStatus.Query())
         self.accessory.update(flags: flags)
-        let firmwareVersion = try device.send(FirmwareVersion.Query()).version
+        let firmwareVersion = try await device.send(FirmwareVersion.Query()).version
         self.accessory.update(firmware: firmwareVersion)
-        let firmwareVersion2 = try device.send(FirmwareVersion.Query.Secondary()).version
+        let firmwareVersion2 = try await device.send(FirmwareVersion.Query.Secondary()).version
         self.accessory.update(secondary: firmwareVersion2)
-        let rating = try device.send(DeviceRating.Query())
+        let rating = try await device.send(DeviceRating.Query())
         self.accessory.update(rating: rating)
     }
     
-    func refresh() {
-        
-        do {
-            try device {
-                try refresh($0)
+    func refresh() async {
+        await refreshTask?.value // wait for last task
+        refreshTask = Task {
+            do {
+                try await device {
+                    try await refresh($0)
+                }
             }
+            catch { log?("Error: Could not refresh device information. \(error)") }
         }
-        catch { log?("Error: Could not refresh device information. \(error)") }
     }
     
-    func didChange(flag: FlagStatus, newValue: Bool) {
+    func didChange(flag: FlagStatus, newValue: Bool) async {
         do {
             let setting: FlagStatus.Setting = newValue ? .init(enabled: [flag]) : .init(disabled: [flag])
-            try device {
-                let _ = try $0.send(setting)
+            try await device {
+                let _ = try await $0.send(setting)
                 log?("\(newValue ? "Enabled" : "Disabled") \(flag.description)")
-                try refresh($0)
             }
         }
         catch { log?("Error: Could not set \(flag.description). \(error)") }
+        
+        try? await Task.sleep(timeInterval: 1.0)
+        await refresh()
     }
     
-    func didChange(frequency: OutputFrequency) {
+    func didChange(frequency: OutputFrequency) async {
         do {
-            try device {
-                let _ = try $0.send(OutputFrequency.Setting(frequency: frequency))
+            try await device {
+                let _ = try await $0.send(OutputFrequency.Setting(frequency: frequency))
                 log?("Set output frequency to \(frequency)")
             }
         }
         catch { log?("Error: Could not set output frequency to \(frequency). \(error)") }
-        Thread.sleep(forTimeInterval: 1.5)
-        refresh()
+        try? await Task.sleep(timeInterval: 2.0)
+        await refresh()
     }
 }
 
@@ -146,55 +149,73 @@ extension SolarController: HAP.DeviceDelegate {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .buzzer, newValue: value)
+            Task {
+                await didChange(flag: .buzzer, newValue: value)
+            }
         case .solarFlag(.overloadBypass):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .overloadBypass, newValue: value)
+            Task {
+                await didChange(flag: .overloadBypass, newValue: value)
+            }
         case .solarFlag(.powerSaving):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .powerSaving, newValue: value)
+            Task {
+                await didChange(flag: .powerSaving, newValue: value)
+            }
         case .solarFlag(.displayTimeout):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .displayTimeout, newValue: value)
+            Task {
+                await didChange(flag: .displayTimeout, newValue: value)
+            }
         case .solarFlag(.overloadRestart):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .overloadRestart, newValue: value)
+            Task {
+                await didChange(flag: .overloadRestart, newValue: value)
+            }
         case .solarFlag(.temperatureRestart):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .temperatureRestart, newValue: value)
+            Task {
+                await didChange(flag: .temperatureRestart, newValue: value)
+            }
         case .solarFlag(.backlight):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .backlight, newValue: value)
+            Task {
+                await didChange(flag: .backlight, newValue: value)
+            }
         case .solarFlag(.alarm):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .alarm, newValue: value)
+            Task {
+                await didChange(flag: .alarm, newValue: value)
+            }
         case .solarFlag(.recordFault):
             guard let value = newValue as? Bool else {
                 assertionFailure("invalid type \(String(describing: newValue))")
                 return
             }
-            didChange(flag: .recordFault, newValue: value)
+            Task {
+                await didChange(flag: .recordFault, newValue: value)
+            }
         case .solarHomeKit(604):
             // change output frequency
             guard let rawValue = newValue as? UInt8 else {
@@ -205,12 +226,14 @@ extension SolarController: HAP.DeviceDelegate {
                 log?("Invalid frequency \(rawValue)")
                 return
             }
-            didChange(frequency: frequency)
+            Task {
+                await didChange(frequency: frequency)
+            }
         default:
             break
         }
     }
-
+    
     func characteristicListenerDidSubscribe(_ accessory: Accessory,
                                             service: Service,
                                             characteristic: AnyCharacteristic) {
